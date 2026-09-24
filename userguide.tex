@@ -1,0 +1,226 @@
+\documentclass[10pt]{ijgtp}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\newcommand{\cmd}[1]{\texttt{\detokenize{#1}}}
+
+\begin{document}
+\papertype{User Guide}
+\title{IJGTP Class Documentation}
+\begin{abstract}
+This guide describes the public interface of \texttt{ijgtp.cls}: preparing
+one manuscript or a collection of papers, setting author and publication
+metadata, using figures and tables, and compiling bibliographies. It describes
+the main commands available to authors, selected standard commands
+whose behavior the class changes, and the additional table column types.
+Internal commands containing \texttt{@} are implementation details and
+are not intended for use in manuscripts.
+\end{abstract}
+\keywords{LaTeX; IJGTP; document class; author instructions}
+\maketitle
+\tableofcontents
+
+\section{Files, packages, and class options}
+\label{sec:setup}
+Place \texttt{ijgtp.cls} and \texttt{scilight.bst} in the working directory
+or in a directory searched by TeX. The title and footer require the image
+files \texttt{header}, \texttt{F1}, and \texttt{cc-by}; the ORCID command
+also requires \texttt{orcid}. Supply their PDF versions for PDFLaTeX and
+their EPS versions for the LaTeX--dvips workflow. The sample plot files
+are examples, not class dependencies.
+
+The class is based on \texttt{article}, defaults to 10-point text, and
+sets A4 journal geometry. Options are passed to \texttt{article}: for
+example, \cmd{\documentclass[12pt]{ijgtp}} selects 12-point text.
+
+Load optional packages explicitly. For example:
+\begin{samepage}
+\begin{verbatim}
+\documentclass[10pt]{ijgtp}
+\usepackage{amsmath,amssymb,cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+% \usepackage{float} % only if its facilities are needed
+% \usepackage{epstopdf} \epstopdfsetup{suffix=} % convert eps figures in pdf
+\end{verbatim}
+\end{samepage}
+
+The class already loads \texttt{natbib}, \texttt{bibunits},
+\texttt{etoolbox}, \texttt{geometry}, \texttt{xcolor},
+\texttt{microtype}, \texttt{setspace}, \texttt{times},
+\texttt{titlesec}, \texttt{array}, \texttt{lineno},
+\texttt{graphicx}, \texttt{caption}, \texttt{fancyhdr},
+\texttt{lastpage}, \texttt{catchfile}, and \texttt{hyperref}.
+Their commands remain available.
+
+\section{A minimal manuscript}
+\label{sec:minimal}
+Define the metadata before \cmd{\maketitle}. Each \cmd{\author} starts
+a new author record. The following affiliation, email, ORCID, and
+correspondence commands apply to that author.
+Avoid verbatim material inside the captured abstract environment.
+\begin{verbatim}
+\documentclass{ijgtp}
+\begin{document}
+\title{Title of the manuscript}
+\author{Wednesday Addams}
+\affiliation{Department of Physics, Nevermore Academy}
+\email{inmemoryofwednesday@gmail.com}
+\corresponding
+\begin{abstract}
+An overview of the question, method, and results.
+\end{abstract}
+\keywords{gravitation; theoretical physics}
+\maketitle
+\section{Introduction}\label{sec:intro}
+The manuscript starts here.
+\section{Conclusions}
+See Section~\ref{sec:intro}.
+\end{document}
+\end{verbatim}
+\cmd{template.tex} provides an extended example that can serve as a starting point for a manuscript.
+
+\section{Author-facing command reference}
+\label{sec:commands}
+The following list covers the public commands and environments defined
+or given paper-specific behavior by the class. Arguments in examples
+are placeholders unless stated otherwise.
+
+\subsection{Basic information}
+\begin{description}
+\item[\cmd{\title{title}}]
+Sets the title for the next \cmd{\maketitle}. The title is retained
+after printing, so it can be reused if no replacement is supplied.
+Every manuscript is expected to have a title.
+\item[\cmd{\papertype{type}}]
+Sets the designation above the title, such as \texttt{Article} or
+\texttt{Review}. The default is \texttt{Article}.
+\item[\cmd{\author{full name}}]
+Appends an author. Repeat this command for additional authors.
+Author notes can be supplied with \cmd{\thanks{note}} inside the name.
+\item[\cmd{\authorname{surname}{initials}}]
+Overrides the current author's name parts used in running heads and
+the suggested citation. It does not alter the displayed full name.
+For example, use \cmd{\authorname{van Beethoven}{L.}} after
+\cmd{\author{Ludwig van Beethoven}}. Without an override, the last
+space-separated name component is treated as the surname and earlier
+components supply initials. Use the override for compound surnames,
+suffixes, or other names that this simple rule cannot represent.
+\item[\cmd{\affiliation{address}}]
+Adds an affiliation to the current author. Repeat it for multiple
+affiliations. Identical affiliation text is shared between authors.
+\item[\cmd{\email{address}}]
+Sets the current author's email address. Only addresses of authors
+marked as corresponding are printed in the correspondence block.
+Literal underscores and escaped underscores are supported.
+\item[\cmd{\orcid{identifier}}]
+Sets the current author's ORCID identifier, without the URL prefix.
+It produces an icon linking to the ORCID page. An empty argument
+omits the icon. The identifier is not validated by the class.
+\item[\cmd{\corresponding}]
+Marks the current author as corresponding. It takes no argument.
+The class suppresses the distinguishing asterisk when all authors
+are corresponding. The correspondence block requires a nonempty
+email address from at least one corresponding author.
+\end{description}
+
+The commands \cmd{\authorname}, \cmd{\affiliation}, \cmd{\email},
+\cmd{\orcid}, and \cmd{\corresponding} require a preceding
+\cmd{\author}; otherwise, the class reports an error.
+
+\subsection{Abstract, keywords, and metadata}
+\begin{description}
+\item[\texttt{abstract} environment]
+Collects the abstract for the next title block. Use
+\cmd{\begin{abstract}} and \cmd{\end{abstract}} before
+\cmd{\maketitle}. A later abstract replaces an earlier one.
+\item[\cmd{\keywords{list}}]
+Sets the keyword text; use semicolons or another desired separator.
+\item[\cmd{\pacs{list}}]
+Sets PACS classification text. It is printed after the keywords.
+\item[\cmd{\arxivnumber{identifier}}]
+Sets an arXiv identifier without an \texttt{arXiv:} prefix or URL.
+Examples are \texttt{2507.22660}, \texttt{2603.12466v2}, and
+\texttt{gr-qc/0307012}. The class checks identifier syntax, not
+whether the record exists. Invalid input produces a warning and
+preserves any earlier valid identifier. The link appears in the
+suggested citation.
+\item[\cmd{\maketitle}]
+Starts a paper, first finishing the preceding pages and floats.
+\item[\cmd{\appendix}]
+Switches the current paper to appendix section numbering.
+\end{description}
+
+Keywords, PACS codes, and the arXiv identifier are optional.
+Empty or space-only keyword and PACS arguments omit their headings.
+
+\subsection{Publication identifiers}
+\begin{description}
+\item[\cmd{\ijgtppublished{year}{volume}{issue}{article}}]
+Sets journal publication metadata and enables the journal citation
+suggestion, publication running head, and DOI footer. For example:
+\par\noindent\cmd{\ijgtppublished{2026}{2}{1}{5}}
+\par\noindent This constructs
+\texttt{10.53941/ijgtp.2026.100005}. The DOI consists of the year,
+issue, and article number padded to at least five digits; the volume
+does not enter this identifier. Use actual assigned publication data.
+Arguments must contain decimal digits only. The year must be at least
+2025, and the other values must be positive. Each value must fit TeX's
+integer range. Leading zeros are accepted and normalized. Invalid
+input produces a warning and preserves any earlier valid values.
+\item[\cmd{\receiveddate{date}}]
+Sets the received-date text.
+\item[\cmd{\reviseddate{date}}]
+Sets the revised-date text.
+\item[\cmd{\accepteddate{date}}]
+Sets the accepted-date text.
+\item[\cmd{\publisheddate{date}}]
+Sets the publication-date text.
+\end{description}
+
+Date text is printed as supplied: no date parsing or chronological validation is performed.
+Without publication metadata, the running head indicates a manuscript prepared for the journal.
+The copyright year is the supplied publication year, if available; otherwise, it is the current compilation year.
+
+\subsection{Bibliography commands and formatting hooks}
+\begin{description}
+\item[\cmd{\bibliography{database}}]
+Prints the current bibliography using the named \texttt{.bib} database,
+then closes that bibliography unit. Omit the filename extension;
+multiple database names may be comma-separated.
+\item[\cmd{\bibliographystyle{style}}]
+Selects the current paper's BibTeX style. Place it after
+\cmd{\maketitle} and before \cmd{\bibliography}. It may follow citations.
+\item[\cmd{\bibnumfmt{number}}]
+The class redefines this \texttt{natbib} formatting hook to print a
+bibliography number followed by a period. Authors normally do not call it.
+\item[\cmd{\bibsection}]
+The class redefines this \texttt{natbib} hook to create the unnumbered
+references heading and its table-of-contents entry.
+\end{description}
+
+Use the loaded \texttt{natbib} commands, such as \cmd{\cite{key}},
+\cmd{\cite{first,second}}, and \cmd{\nocite{key}}, in the usual way.
+The class uses numeric citations with sorting and compression.
+\cmd{\nocite{*}} includes all entries from the selected database.
+
+\subsection{Additional table column types}
+The class defines \texttt{L\{width\}}, \texttt{C\{width\}}, and
+\texttt{R\{width\}}: fixed-width, vertically centered paragraph columns
+with left, centered, and right horizontal alignment, respectively.
+For example:
+\begin{verbatim}
+\begin{tabular}{L{4cm}C{2cm}R{2cm}}
+Quantity & Symbol & Value \\
+Decay time & $\tau$ & 1.0 \\
+\end{tabular}
+\end{verbatim}
+The public helper \cmd{\PreserveBackslash{alignment}} applies an alignment
+command while retaining the meaning of the table row terminator
+\cmd{\\}. The three column types use it internally; ordinary tables
+do not need to call it directly.
+
+\end{document}
