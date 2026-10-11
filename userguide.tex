@@ -20,15 +20,18 @@ are not intended for use in manuscripts.
 \end{abstract}
 \keywords{LaTeX; IJGTP; document class; author instructions}
 \maketitle
+
 \tableofcontents
+
+\bigskip
 
 \section{Files, packages, and class options}
 \label{sec:setup}
 Place \texttt{ijgtp.cls} and \texttt{scilight.bst} in the working directory
-or in a directory searched by TeX. The title and footer require the image
+or in a directory searched by \TeX. The title and footer require the image
 files \texttt{header}, \texttt{F1}, and \texttt{cc-by}; the ORCID command
 also requires \texttt{orcid}. Supply their PDF versions for PDFLaTeX and
-their EPS versions for the LaTeX--dvips workflow. The sample plot files
+their EPS versions for the \LaTeX--dvips workflow. The sample plot files
 are examples, not class dependencies.
 
 The class is based on \texttt{article}, defaults to 10-point text, and
@@ -44,7 +47,7 @@ Load optional packages explicitly. For example:
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
 % \usepackage{float} % only if its facilities are needed
-% \usepackage{epstopdf} \epstopdfsetup{suffix=} % convert eps figures in pdf
+% \usepackage{epstopdf} \epstopdfsetup{suffix=} % convert EPS figures to PDF
 \end{verbatim}
 \end{samepage}
 
@@ -59,7 +62,7 @@ Their commands remain available.
 \section{A minimal manuscript}
 \label{sec:minimal}
 Define the metadata before \cmd{\maketitle}. Each \cmd{\author} starts
-a new author record. The following affiliation, email, ORCID, and
+a new author record. Subsequent affiliation, email, ORCID, and
 correspondence commands apply to that author.
 Avoid verbatim material inside the captured abstract environment.
 \begin{verbatim}
@@ -102,7 +105,7 @@ Sets the designation above the title, such as \texttt{Article} or
 Appends an author. Repeat this command for additional authors.
 Author notes can be supplied with \cmd{\thanks{note}} inside the name.
 \item[\cmd{\authorname{surname}{initials}}]
-Overrides the current author's name parts used in running heads and
+Overrides the parts of the current author's name used in running heads and
 the suggested citation. It does not alter the displayed full name.
 For example, use \cmd{\authorname{van Beethoven}{L.}} after
 \cmd{\author{Ludwig van Beethoven}}. Without an override, the last
@@ -140,11 +143,11 @@ Collects the abstract for the next title block. Use
 \item[\cmd{\keywords{list}}]
 Sets the keyword text; use semicolons or another desired separator.
 \item[\cmd{\pacs{list}}]
-Sets PACS classification text. It is printed after the keywords.
+Sets the PACS classification text. It is printed after the keywords.
 \item[\cmd{\arxivnumber{identifier}}]
 Sets an arXiv identifier without an \texttt{arXiv:} prefix or URL.
 Examples are \texttt{2507.22660}, \texttt{2603.12466v2}, and
-\texttt{gr-qc/0307012}. The class checks identifier syntax, not
+\texttt{gr-qc/0307012}. The class checks the identifier's syntax, not
 whether the record exists. Invalid input produces a warning and
 preserves any earlier valid identifier. The link appears in the
 suggested citation.
@@ -192,7 +195,7 @@ Prints the current bibliography using the named \texttt{.bib} database,
 then closes that bibliography unit. Omit the filename extension;
 multiple database names may be comma-separated.
 \item[\cmd{\bibliographystyle{style}}]
-Selects the current paper's BibTeX style. Place it after
+Selects the current paper's {Bib\TeX} style. Place it after
 \cmd{\maketitle} and before \cmd{\bibliography}. It may follow citations.
 \item[\cmd{\bibnumfmt{number}}]
 The class redefines this \texttt{natbib} formatting hook to print a
@@ -222,5 +225,180 @@ The public helper \cmd{\PreserveBackslash{alignment}} applies an alignment
 command while retaining the meaning of the table row terminator
 \cmd{\\}. The three column types use it internally; ordinary tables
 do not need to call it directly.
+
+
+\section{Two-column mode and layout features}
+\label{sec:layout}
+
+Two-column mode works similarly to that of the {REV\TeX} class, whose
+page-grid routines are integrated into this class.
+Standard \texttt{figure} and \texttt{table} floats use one column;
+\texttt{figure*} and \texttt{table*} span both columns.
+
+\cmd{\twocolumn} switches the following text to two columns on the
+current page. \cmd{\onecolumn} balances the preceding columns and
+continues at full width below them. A page break occurs naturally if
+there is insufficient space. Repeating the current mode does not force
+a page break. The optional form \cmd{\twocolumn[full-width material]}
+places that material above the new columns.
+Similarly, \cmd{\tableofcontents} keeps the current
+column mode. \cmd{\tableofcontents*} uses the full width and then restores
+the preceding column mode, without forcing a
+new page. Pending column floats may be deferred past a switch.
+A title, its contents, and the two-column body can share a page.
+
+\begin{verbatim}
+Full-width introduction.
+\twocolumn
+Text in two columns.
+\onecolumn
+Full-width text below the balanced columns.
+\end{verbatim}
+
+The \texttt{widetext} environment temporarily spans both columns and
+restores two-column text afterwards. In one-column mode, \texttt{widetext}
+adds no rules or layout changes. Its contents can span multiple pages.
+\begin{verbatim}
+\begin{widetext}
+Full-width text or a wide equation.
+\end{widetext}
+\end{verbatim}
+
+The loaded \texttt{geometry} package provides \cmd{\newgeometry},
+\cmd{\savegeometry}, \cmd{\loadgeometry}, and \cmd{\restoregeometry}.
+A user-selected layout remains active until changed or until the next
+\cmd{\maketitle}, which restores the journal layout. Title-page and
+body margins differ; the normal body layout resumes after the first
+physical page unless the user explicitly changes geometry.
+
+The loaded \texttt{lineno} package provides \cmd{\linenumbers} and
+\cmd{\nolinenumbers}. The title material is not line-numbered. If line
+numbering was enabled before \cmd{\maketitle}, it resumes afterwards;
+the running line-number sequence restarts for each paper.
+
+\section{Several papers in one document}
+\label{sec:collection}
+Repeat the metadata and \cmd{\maketitle} for each paper.
+After a title is printed, the class clears the authors, affiliations,
+emails, ORCIDs, correspondence flags, abstract, keywords, PACS, dates,
+publication metadata, and arXiv identifier.
+Each paper has independent numbering and cross-references for equations,
+figures, tables, and sections.
+A bibliography can be shared by several papers or provided separately for
+each paper, using either the \cmd{\bibliography} command with {Bib\TeX}
+or the \texttt{thebibliography} environment.
+
+\subsection{Layout}
+Each paper starts on a new page. An optional document-wide contents page
+precedes the first title:
+\begin{verbatim}
+\begin{document}
+\tableofcontents % all papers and sections
+\title{First paper}\author{Alice Smith}
+\begin{abstract}First abstract.\end{abstract}
+\maketitle
+\tableofcontents % this paper only
+\section{Introduction}\label{sec:intro}
+First paper text.
+\bibliography{first-references}
+
+\title{Second paper}\author{Bob Jones}
+\begin{abstract}Second abstract.\end{abstract}
+\maketitle
+\bibliographystyle{plain}
+\section{Introduction}\label{sec:intro}
+This reference stays in this paper: \ref{sec:intro}.
+\bibliography{second-references}
+\end{document}
+\end{verbatim}
+
+\subsection{Compilation and bibliography workflows}
+\label{sec:build}
+For a single paper with one bibliography in \texttt{paper.tex}, use:
+\begin{verbatim}
+latex paper
+bibtex paper
+latex paper
+latex paper
+\end{verbatim}
+The class writes a bibliography unit such as \texttt{paper1.aux} and
+includes it from \texttt{paper.aux} when exactly one paper and one
+bibliography request have been encountered. No paper count is saved
+for a later run. {Bib\TeX} produces \texttt{paper.bbl}; the class uses that
+file as a fallback when the unit-specific \texttt{paper1.bbl} is absent.
+If both files exist, the unit-specific file takes precedence. After
+switching workflows, remove or regenerate a stale unit-specific
+\texttt{.bbl} rather than expecting the fallback to override it.
+
+For a collection, run {Bib\TeX} on the individual bibliography units:
+\begin{verbatim}
+latex paper
+bibtex paper1
+bibtex paper2
+. . .
+latex paper
+latex paper
+\end{verbatim}
+These numbers identify bibliography units. To run {Bib\TeX} on all
+bibliography units using the WinEdt button, use the following workaround:
+\begin{verbatim}
+\documentclass[10pt,twocolumn]{ijgtp}
+\iffalse%
+\usepackage{bibtopic}
+\fi%
+\end{verbatim}
+
+\subsection{Importing external articles}
+The command \verb|\inputpaper{file.tex}|, used in the document body, executes a manuscript in a
+group, ignores its document class declaration, and stops at its own
+\verb|\end{document}|.
+Several articles can be combined in a single document, together with their
+publication information, as follows:
+\begin{verbatim}
+\documentclass[10pt,twocolumn]{ijgtp}
+\iffalse%
+\usepackage{bibtopic}
+\fi%
+
+\usepackage{cmap,amsmath,amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{epstopdf}
+\epstopdfsetup{suffix=}
+
+\begin{document}
+
+\arxivnumber{2701.00001}
+\receiveddate{11 January 2027}
+\reviseddate{24 January 2027}
+\accepteddate{26 January 2027}
+\publisheddate{22 January 2027}
+\ijgtppublished{2027}{3}{1}{1}
+\inputpaper{paper1/main}
+
+\arxivnumber{2702.00001}
+\receiveddate{11 February 2027}
+\reviseddate{24 February 2027}
+\accepteddate{26 February 2027}
+\publisheddate{22 February 2027}
+\ijgtppublished{2027}{3}{1}{2}
+\inputpaper{paper2/article.tex}
+
+\arxivnumber{2703.00001}
+\receiveddate{11 March 2027}
+\reviseddate{24 March 2027}
+\accepteddate{26 March 2027}
+\publisheddate{22 March 2027}
+\ijgtppublished{2027}{3}{1}{3}
+\inputpaper{paper3/manuscript}
+
+\end{document}
+\end{verbatim}
+
+The external manuscript can be prepared using the \texttt{ijgtp},
+\texttt{article}, \texttt{revtex}, or \texttt{iopjournal} class, and possibly
+other popular classes for scientific papers.
+
 
 \end{document}

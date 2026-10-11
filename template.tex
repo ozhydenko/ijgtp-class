@@ -27,19 +27,18 @@
 
 \begin{abstract}
 This is an abstract.
-
 \lipsum[1-2]
 \end{abstract}
 
-%\pacs{02.30.Mv; 04.30.-w; 04.50.Gh; 04.70.Bw}
+%\pacs{04.30.-w; 04.70.Bw}
 \keywords{list of keyword}
 
 \maketitle
-\tableofcontents
 
 \section{Introduction}
 \label{sec:introduction}
-This is the introduction. \lipsum[1-5]
+This is the introduction.
+\lipsum[1-5]
 
 \section{First section}
 \label{sec:first}
@@ -58,19 +57,15 @@ This is the introduction. \lipsum[1-5]
 \label{sec:demo}
 This is an example of a citation \cite{Konoplya:2025uta,Matyjasek:2026yiu}.
 
-Sections~\ref{sec:introduction} and~\ref{sec:first} provide the context for
-this example; see also Subsection~\ref{sec:first-subsection}.
-Equation~\eqref{eq:decay}, Table~\ref{tab:decay}, and Figure~\ref{fig:decay}
-illustrate numbered objects and cross-references. The values below are
-illustrative, rather than experimental results.
+Sections~\ref{sec:introduction} and~\ref{sec:first} provide the context for this example; see also Subsection~\ref{sec:first-subsection}.
+Equation~\eqref{eq:decay}, Table~\ref{tab:decay}, and Figure~\ref{fig:decay} illustrate numbered objects and cross-references. The values below are illustrative, rather than experimental results.
 
 For a quantity with initial amplitude $A_0$ and decay time $\tau>0$, consider
 \begin{equation}
   A(t)=A_0\exp\!\left(-\frac{t}{\tau}\right), \qquad t\geq 0.
   \label{eq:decay}
 \end{equation}
-Table~\ref{tab:decay} lists selected values of Equation~\eqref{eq:decay},
-while Figure~\ref{fig:decay} shows the continuous curve.
+Table~\ref{tab:decay} lists selected values of Equation~\eqref{eq:decay}, while Figure~\ref{fig:decay} shows the continuous curve.
 
 \begin{table}%[htbp]
   \centering
@@ -106,6 +101,9 @@ In conclusion, \lipsum[1]
 \section*{Author Contributions}
 F.L.: conceptualization, methodology, software, writing; C.P.: conceptualization, methodology, software, writing. All authors have read and agreed to the published version of the manuscript.
 
+\section*{Acknowledgments}
+F.L. thanks someone for something.
+
 \section*{Funding}
 This paper was supported by a Funding agency.
 
@@ -125,4 +123,5 @@ The authors declare no conflict of interests.
 During the preparation of this work, the authors used ChatGPT developed by OpenAI for language editing and text refinement. After using this service, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
 
 \bibliography{template}
+
 \end{document}
